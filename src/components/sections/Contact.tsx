@@ -2,14 +2,15 @@
 
 import SectionReveal from "@/components/ui/SectionReveal";
 import { motion } from "motion/react";
-import { Mail, Globe, Briefcase, Link2, Send } from "lucide-react";
+import { Mail, Globe, Briefcase, Send, Music, Camera } from "lucide-react";
 import { useState } from "react";
 
 const socialLinks = [
   { icon: <Mail size={18} />, label: "Email", value: "hello@hichambasr.com", href: "mailto:hello@hichambasr.com" },
   { icon: <Briefcase size={18} />, label: "LinkedIn", value: "/in/hichambasr", href: "https://www.linkedin.com" },
   { icon: <Globe size={18} />, label: "GitHub", value: "@hichambasr", href: "https://github.com" },
-  { icon: <Link2 size={18} />, label: "X (Twitter)", value: "@hichambasr", href: "https://twitter.com" },
+  { icon: <Music size={18} />, label: "TikTok", value: "@signal.global.2026", href: "https://www.tiktok.com/@signal.global.2026" },
+  { icon: <Camera size={18} />, label: "Instagram", value: "@ai_films_studio", href: "https://www.instagram.com/ai_films_studio/" },
 ];
 
 export default function Contact() {
