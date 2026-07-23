@@ -6,7 +6,7 @@ import { Mail, Globe, Briefcase, Send, Music, Camera } from "lucide-react";
 import { useState } from "react";
 
 const socialLinks = [
-  { icon: <Mail size={18} />, label: "Email", value: "hello@hichambasr.com", href: "mailto:hello@hichambasr.com" },
+  { icon: <Mail size={18} />, label: "Email", value: "basrhicham@gmail.com", href: "mailto:basrhicham@gmail.com" },
   { icon: <Briefcase size={18} />, label: "LinkedIn", value: "/in/hichambasr", href: "https://www.linkedin.com" },
   { icon: <Globe size={18} />, label: "GitHub", value: "@hichambasr", href: "https://github.com" },
   { icon: <Music size={18} />, label: "TikTok", value: "@signal.global.2026", href: "https://www.tiktok.com/@signal.global.2026" },
