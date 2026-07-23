@@ -3,6 +3,10 @@
 import SectionReveal from "@/components/ui/SectionReveal";
 import { motion, useInView } from "motion/react";
 import { useRef, useEffect, useState } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface SkillGroup {
   title: string;
@@ -79,14 +83,47 @@ function SkillBar({ name, level }: { name: string; level: number }) {
           initial={{ width: 0 }}
           animate={{ width: `${width}%` }}
           transition={{ duration: 1.2, ease: [0.25, 0.46, 0.45, 0.94] }}
-          className="h-full bg-gradient-to-r from-blue-500 to-blue-400 rounded-full"
-        />
+          className="h-full bg-gradient-to-r from-blue-500 to-blue-400 rounded-full relative"
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-400/0 via-white/20 to-blue-400/0 animate-[shimmer_2s_ease-in-out_infinite]" />
+        </motion.div>
       </div>
     </div>
   );
 }
 
 export default function Skills() {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const cards = containerRef.current?.querySelectorAll(".skill-card");
+      if (cards) {
+        cards.forEach((card, i) => {
+          gsap.fromTo(
+            card,
+            { opacity: 0, y: 40, scale: 0.95 },
+            {
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              duration: 0.8,
+              delay: i * 0.1,
+              ease: "power3.out",
+              scrollTrigger: {
+                trigger: card,
+                start: "top 85%",
+                toggleActions: "play none none none",
+              },
+            }
+          );
+        });
+      }
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
     <section id="skills" className="relative py-32 px-6 md:px-12 lg:px-24">
       <div className="max-w-6xl mx-auto">
@@ -106,10 +143,10 @@ export default function Skills() {
           </div>
         </SectionReveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
-          {skillGroups.map((group, i) => (
-            <SectionReveal key={group.title} delay={i * 0.1}>
-              <div className="bg-[#111111] border border-white/5 rounded-2xl p-6 md:p-8">
+        <div ref={containerRef} className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
+          {skillGroups.map((group) => (
+            <div key={group.title} className="skill-card">
+              <div className="bg-[#111111] border border-white/5 rounded-2xl p-6 md:p-8 hover:border-blue-500/10 transition-colors duration-500">
                 <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-6">
                   {group.title}
                 </h3>
@@ -117,7 +154,7 @@ export default function Skills() {
                   <SkillBar key={skill.name} name={skill.name} level={skill.level} />
                 ))}
               </div>
-            </SectionReveal>
+            </div>
           ))}
         </div>
 
@@ -130,7 +167,7 @@ export default function Skills() {
               {techStack.map((tech) => (
                 <span
                   key={tech}
-                  className="text-xs px-4 py-2 rounded-full bg-white/5 text-gray-400 border border-white/5 hover:border-blue-500/30 hover:text-blue-400 transition-colors duration-300 cursor-default"
+                  className="text-xs px-4 py-2 rounded-full bg-white/5 text-gray-400 border border-white/5 hover:border-blue-500/30 hover:text-blue-400 hover:shadow-[0_0_15px_rgba(0,102,255,0.1)] transition-all duration-300 cursor-default"
                 >
                   {tech}
                 </span>

@@ -1,8 +1,6 @@
 "use client";
 
 import SectionReveal from "@/components/ui/SectionReveal";
-import { motion } from "motion/react";
-
 interface Platform {
   title: string;
   subtitle: string;
@@ -58,10 +56,7 @@ const platforms: Platform[] = [
 function PlatformCard({ platform, index }: { platform: Platform; index: number }) {
   return (
     <SectionReveal delay={index * 0.1}>
-      <motion.div
-        whileHover={{ y: -4 }}
-        className="bg-[#111111] border border-white/5 rounded-2xl p-6 md:p-8 h-full hover:border-blue-500/20 transition-all duration-500 group relative overflow-hidden"
-      >
+      <div className="bg-[#111111] border border-white/5 rounded-2xl p-6 md:p-8 h-full hover:border-blue-500/20 transition-all duration-500 group relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         <div className="relative z-10">
           <span className="text-xs text-gray-500 mb-2 block">{platform.subtitle}</span>
@@ -82,7 +77,7 @@ function PlatformCard({ platform, index }: { platform: Platform; index: number }
             ))}
           </div>
         </div>
-      </motion.div>
+      </div>
     </SectionReveal>
   );
 }

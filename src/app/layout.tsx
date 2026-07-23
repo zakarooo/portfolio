@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { WebVitals } from "@/components/ui/WebVitals";
+import CustomCursor, { CursorTrail } from "@/components/ui/CustomCursor";
 import "./globals.css";
 
 const geistSans = localFont({
@@ -54,6 +55,8 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#0a0a0a] text-white`}
       >
+        <CustomCursor />
+        <CursorTrail />
         {children}
         <WebVitals />
         <Analytics />

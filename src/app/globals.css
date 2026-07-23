@@ -22,6 +22,11 @@ body {
   background: var(--background);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
   overflow-x: hidden;
+  cursor: none;
+}
+
+a, button, [data-cursor-hover] {
+  cursor: none;
 }
 
 ::selection {
@@ -52,6 +57,34 @@ body {
   }
 }
 
+/* ── Underline animation ── */
+.link-underline {
+  position: relative;
+  display: inline-block;
+}
+
+.link-underline::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: linear-gradient(90deg, #0066ff, #7c3aed);
+  transition: width 0.3s ease;
+}
+
+.link-underline:hover::after {
+  width: 100%;
+}
+
+/* ── Shimmer effect ── */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* ── Marquee ── */
 @keyframes marquee {
   0% {
     transform: translateX(0);
@@ -67,4 +100,24 @@ body {
 
 .animate-marquee:hover {
   animation-play-state: paused;
+}
+
+/* ── Glow pulse ── */
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(0, 102, 255, 0.1); }
+  50% { box-shadow: 0 0 40px rgba(0, 102, 255, 0.3); }
+}
+
+.glow-pulse {
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+
+/* ── Float ── */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.float {
+  animation: float 6s ease-in-out infinite;
 }

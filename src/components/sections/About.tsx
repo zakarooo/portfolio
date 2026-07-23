@@ -2,8 +2,12 @@
 
 import SectionReveal from "@/components/ui/SectionReveal";
 import { motion, useInView } from "motion/react";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { Camera, Code, Brain } from "lucide-react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const disciplines = [
   {
@@ -55,7 +59,7 @@ function TimelineItem({ item, index }: { item: typeof timeline[0]; index: number
           {item.year.slice(2)}
         </div>
         {index < timeline.length - 1 && (
-          <div className="w-px flex-1 bg-white/10 my-2" />
+          <div className="w-px flex-1 bg-white/10 my-2 timeline-line" />
         )}
       </div>
       <div className="pb-8">
@@ -68,6 +72,34 @@ function TimelineItem({ item, index }: { item: typeof timeline[0]; index: number
 }
 
 export default function About() {
+  const timelineRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const lines = timelineRef.current?.querySelectorAll(".timeline-line");
+      if (lines) {
+        lines.forEach((line) => {
+          gsap.fromTo(
+            line,
+            { scaleY: 0, transformOrigin: "top" },
+            {
+              scaleY: 1,
+              ease: "none",
+              scrollTrigger: {
+                trigger: line,
+                start: "top 80%",
+                end: "bottom 20%",
+                scrub: true,
+              },
+            }
+          );
+        });
+      }
+    }, timelineRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
     <section id="about" className="relative py-32 px-6 md:px-12 lg:px-24">
       <div className="max-w-6xl mx-auto">
@@ -93,7 +125,7 @@ export default function About() {
           {disciplines.map((disc, i) => (
             <SectionReveal key={disc.title} delay={i * 0.15}>
               <div className="bg-[#111111] border border-white/5 rounded-2xl p-8 hover:border-blue-500/20 transition-colors duration-500 group">
-                <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400 mb-6 group-hover:bg-blue-500/20 transition-colors">
+                <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400 mb-6 group-hover:bg-blue-500/20 transition-colors group-hover:shadow-[0_0_20px_rgba(0,102,255,0.15)]">
                   {disc.icon}
                 </div>
                 <span className="text-xs font-mono text-blue-400 mb-2 block">{disc.since}</span>
@@ -113,7 +145,7 @@ export default function About() {
           </div>
         </SectionReveal>
 
-        <div className="max-w-2xl">
+        <div ref={timelineRef} className="max-w-2xl">
           {timeline.map((item, i) => (
             <TimelineItem key={item.year} item={item} index={i} />
           ))}

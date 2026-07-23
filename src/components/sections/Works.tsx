@@ -1,6 +1,7 @@
 "use client";
 
 import SectionReveal from "@/components/ui/SectionReveal";
+import CardTilt from "@/components/ui/CardTilt";
 import { motion, useInView } from "motion/react";
 import { useRef, useState } from "react";
 
@@ -82,19 +83,21 @@ function WorkCard({ work, index }: { work: Work; index: number }) {
       initial={{ opacity: 0, y: 40 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.6, delay: index * 0.08 }}
-      whileHover={{ y: -4 }}
-      className="bg-[#111111] border border-white/5 rounded-2xl p-6 hover:border-white/10 transition-all duration-300 group"
     >
-      <div className="flex items-start justify-between mb-3">
-        <span className="text-xs font-mono text-blue-400">{work.year}</span>
-        <span className="text-xs px-2 py-0.5 rounded-full bg-white/5 text-gray-500">
-          {work.category}
-        </span>
-      </div>
-      <h3 className="text-lg font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">
-        {work.title}
-      </h3>
-      <p className="text-sm text-gray-400 leading-relaxed">{work.description}</p>
+      <CardTilt intensity={8} glareIntensity={0.1}>
+        <div className="bg-[#111111] border border-white/5 rounded-2xl p-6 hover:border-white/10 transition-all duration-300 group">
+          <div className="flex items-start justify-between mb-3">
+            <span className="text-xs font-mono text-blue-400">{work.year}</span>
+            <span className="text-xs px-2 py-0.5 rounded-full bg-white/5 text-gray-500">
+              {work.category}
+            </span>
+          </div>
+          <h3 className="text-lg font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">
+            {work.title}
+          </h3>
+          <p className="text-sm text-gray-400 leading-relaxed">{work.description}</p>
+        </div>
+      </CardTilt>
     </motion.div>
   );
 }
