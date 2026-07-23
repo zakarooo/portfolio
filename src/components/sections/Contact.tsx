@@ -2,8 +2,8 @@
 
 import SectionReveal from "@/components/ui/SectionReveal";
 import { motion } from "motion/react";
-import { Mail, Globe, Briefcase, Send, Music, Camera } from "lucide-react";
-import { useState } from "react";
+import { Mail, Globe, Briefcase, Send, Music, Camera, CheckCircle, AlertCircle } from "lucide-react";
+import { useState, useRef } from "react";
 
 const socialLinks = [
   { icon: <Mail size={18} />, label: "Email", value: "basrhicham@gmail.com", href: "mailto:basrhicham@gmail.com" },
@@ -14,14 +14,40 @@ const socialLinks = [
 ];
 
 export default function Contact() {
-  const [formState, setFormState] = useState({ name: "", email: "", project: "" });
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const formRef = useRef<HTMLFormElement>(null);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 3000);
-    setFormState({ name: "", email: "", project: "" });
+    setStatus("sending");
+
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
+    try {
+      const res = await fetch("https://formsubmit.co/basrhicham@gmail.com", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          name: formData.get("name"),
+          email: formData.get("email"),
+          project: formData.get("project"),
+          _subject: "Nouveau message depuis le portfolio",
+        }),
+      });
+
+      if (res.ok) {
+        setStatus("sent");
+        form.reset();
+        setTimeout(() => setStatus("idle"), 5000);
+      } else {
+        setStatus("error");
+        setTimeout(() => setStatus("idle"), 3000);
+      }
+    } catch {
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 3000);
+    }
   }
 
   return (
@@ -72,58 +98,81 @@ export default function Contact() {
           </SectionReveal>
 
           <SectionReveal delay={0.2}>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="text-sm text-gray-400 mb-2 block">Votre nom</label>
-                <input
-                  type="text"
-                  value={formState.name}
-                  onChange={(e) => setFormState({ ...formState, name: e.target.value })}
-                  className="w-full px-4 py-3 bg-[#111111] border border-white/10 rounded-xl text-white text-sm focus:outline-none focus:border-blue-500/50 transition-colors placeholder-gray-600"
-                  placeholder="Nom complet"
-                  required
-                />
-              </div>
-              <div>
-                <label className="text-sm text-gray-400 mb-2 block">Votre email</label>
-                <input
-                  type="email"
-                  value={formState.email}
-                  onChange={(e) => setFormState({ ...formState, email: e.target.value })}
-                  className="w-full px-4 py-3 bg-[#111111] border border-white/10 rounded-xl text-white text-sm focus:outline-none focus:border-blue-500/50 transition-colors placeholder-gray-600"
-                  placeholder="email@exemple.com"
-                  required
-                />
-              </div>
-              <div>
-                <label className="text-sm text-gray-400 mb-2 block">Votre projet</label>
-                <textarea
-                  value={formState.project}
-                  onChange={(e) => setFormState({ ...formState, project: e.target.value })}
-                  rows={5}
-                  className="w-full px-4 py-3 bg-[#111111] border border-white/10 rounded-xl text-white text-sm focus:outline-none focus:border-blue-500/50 transition-colors resize-none placeholder-gray-600"
-                  placeholder="Décrivez votre projet..."
-                  required
-                />
-              </div>
-              <motion.button
-                type="submit"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="w-full px-6 py-3 text-sm font-medium text-white bg-blue-600 hover:bg-blue-500 rounded-xl transition-colors flex items-center justify-center gap-2"
+            {status === "sent" ? (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="flex flex-col items-center justify-center text-center py-16 bg-[#111111] border border-green-500/20 rounded-2xl"
               >
-                {submitted ? (
-                  "Envoyé ! Réponse sous 24-48h"
-                ) : (
-                  <>
-                    Envoyer le brief <Send size={16} />
-                  </>
+                <CheckCircle size={48} className="text-green-400 mb-4" />
+                <h3 className="text-xl font-bold text-white mb-2">Message envoyé !</h3>
+                <p className="text-sm text-gray-400">
+                  Réponse sous 24–48h ouvrées. Merci !
+                </p>
+              </motion.div>
+            ) : (
+              <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label className="text-sm text-gray-400 mb-2 block">Votre nom</label>
+                  <input
+                    type="text"
+                    name="name"
+                    className="w-full px-4 py-3 bg-[#111111] border border-white/10 rounded-xl text-white text-sm focus:outline-none focus:border-blue-500/50 transition-colors placeholder-gray-600"
+                    placeholder="Nom complet"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="text-sm text-gray-400 mb-2 block">Votre email</label>
+                  <input
+                    type="email"
+                    name="email"
+                    className="w-full px-4 py-3 bg-[#111111] border border-white/10 rounded-xl text-white text-sm focus:outline-none focus:border-blue-500/50 transition-colors placeholder-gray-600"
+                    placeholder="email@exemple.com"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="text-sm text-gray-400 mb-2 block">Votre projet</label>
+                  <textarea
+                    name="project"
+                    rows={5}
+                    className="w-full px-4 py-3 bg-[#111111] border border-white/10 rounded-xl text-white text-sm focus:outline-none focus:border-blue-500/50 transition-colors resize-none placeholder-gray-600"
+                    placeholder="Décrivez votre projet..."
+                    required
+                  />
+                </div>
+
+                {status === "error" && (
+                  <div className="flex items-center gap-2 text-sm text-red-400">
+                    <AlertCircle size={14} />
+                    Une erreur s&apos;est produite. Réessayez.
+                  </div>
                 )}
-              </motion.button>
-              <p className="text-xs text-gray-600 text-center">
-                Réponse sous 24–48h ouvrées. Confidentialité garantie.
-              </p>
-            </form>
+
+                <motion.button
+                  type="submit"
+                  disabled={status === "sending"}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full px-6 py-3 text-sm font-medium text-white bg-blue-600 hover:bg-blue-500 rounded-xl transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {status === "sending" ? (
+                    <span className="flex items-center gap-2">
+                      <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      Envoi en cours...
+                    </span>
+                  ) : (
+                    <>
+                      Envoyer le brief <Send size={16} />
+                    </>
+                  )}
+                </motion.button>
+                <p className="text-xs text-gray-600 text-center">
+                  Réponse sous 24–48h ouvrées. Confidentialité garantie.
+                </p>
+              </form>
+            )}
           </SectionReveal>
         </div>
       </div>

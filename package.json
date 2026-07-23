@@ -11,6 +11,7 @@
     "lighthouse": "lhci autorun"
   },
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
     "@react-three/drei": "^9.122.0",
     "@react-three/fiber": "^8.18.0",
     "@types/three": "^0.185.1",
@@ -21,6 +22,7 @@
     "lucide-react": "^1.25.0",
     "motion": "^12.42.2",
     "next": "14.2.35",
+    "nodemailer": "^9.0.3",
     "react": "^18",
     "react-dom": "^18",
     "sharp": "^0.35.3",
@@ -32,6 +34,7 @@
     "@lhci/cli": "^0.15.1",
     "@next/bundle-analyzer": "^16.2.11",
     "@types/node": "^20",
+    "@types/nodemailer": "^8.0.1",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
